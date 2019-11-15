@@ -489,7 +489,32 @@ public class FlightMapController implements Initializable {
             missionMapSync();
         });
     }
+    //--------------------------------------------------------------------------------------
+    public void setMissionItems2(JSONArray jsonArray) {
+        missionItems = new ArrayList<>();
+        for(int i=0; i<jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            MissionItem msg = new MissionItem();
+            msg.setSeq(jsonObject.getInt("seq"));
+            msg.setCommand(jsonObject.getInt("command"));
+            msg.setParam1(jsonObject.getFloat("param1"));
+            msg.setParam2(jsonObject.getFloat("param2"));
+            msg.setParam3(jsonObject.getFloat("param3"));
+            msg.setParam4(jsonObject.getFloat("param4"));
 
+            msg.setX(jsonObject.getDouble("x"));
+            msg.setY(jsonObject.getDouble("y"));
+            msg.setZ(jsonObject.getFloat("z"));
+            missionItems.add(msg);
+        }
+
+        Platform.runLater(() -> {
+            missionTableView.setItems(FXCollections.observableList(missionItems));
+            missionTableView.refresh();
+            missionMapSync();
+        });
+    }
+    //--------------------------------------------------------------------------------------
     public void setMissionItems(double lat, double lng) {
         ObservableList<MissionItem> list = missionTableView.getItems();
         if(list.size()>1) {

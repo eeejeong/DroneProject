@@ -14,6 +14,12 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import kosa.team4.gcs.service1.Service1;
+import kosa.team4.gcs.serviceDBRead.ServiceDBRead;
+import kosa.team4.gcs.serviceMagnetOnOff.ElectroMagnet;
+import kosa.team4.gcs.serviceMagnetOnOff.ServiceMagnetOnOff;
+import kosa.team4.gcs.serviceRequestList.ServiceRequestList;
+import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -54,8 +60,8 @@ public class GcsMainController implements Initializable {
 	@FXML public Button btnMissionDownload;
 	@FXML public Button btnMissionStart;
 	@FXML public Button btnMissionStop;
-	@FXML public Button btnGetMissionFromFile;
-	@FXML public Button btnSaveMissionToFile;
+	@FXML public Button btnGetMissionFromDB;
+	@FXML public Button btnSaveMissionToDB;
 	@FXML public Button btnFenceMake;
 	@FXML public Button btnFenceClear;
 	@FXML public Button btnFenceUpload;
@@ -68,8 +74,13 @@ public class GcsMainController implements Initializable {
 	@FXML public Button btnSouth;
 	@FXML public Button btnEast;
 	@FXML public Button btnWest;
+	@FXML public Button btnService1;
+	@FXML public Button btnServiceMagnetOnOff;
+	@FXML public Button btnServiceRequestList;
 
 	public Drone drone;
+	private MqttClient mqttClient;
+
 	//---------------------------------------------------------------------------------
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -86,8 +97,8 @@ public class GcsMainController implements Initializable {
 		btnMissionDownload.setOnAction(btnMissionDownloadEventHandler); btnMissionDownload.setDisable(true);
 		btnMissionStart.setOnAction(btnMissionStartEventHandler); btnMissionStart.setDisable(true);
 		btnMissionStop.setOnAction(btnMissionStopEventHandler); btnMissionStop.setDisable(true);
-		btnGetMissionFromFile.setOnAction(btnGetMissionFromFileEventHandler); btnGetMissionFromFile.setDisable(true);
-		btnSaveMissionToFile.setOnAction(btnSaveMissionToFileEventHandler); btnSaveMissionToFile.setDisable(true);
+		btnGetMissionFromDB.setOnAction(btnGetMissionFromDBEventHandler); btnGetMissionFromDB.setDisable(true);
+		btnSaveMissionToDB.setOnAction(btnSaveMissionToDBEventHandler); btnSaveMissionToDB.setDisable(true);
 		btnFenceMake.setOnAction(btnFenceMakeEventHandler); btnFenceMake.setDisable(true);
 		btnFenceClear.setOnAction(btnFenceClearEventHandler); btnFenceClear.setDisable(true);
 		btnFenceUpload.setOnAction(btnFenceUploadEventHandler); btnFenceUpload.setDisable(true);
@@ -100,6 +111,9 @@ public class GcsMainController implements Initializable {
 		btnSouth.setOnAction(btnSouthEventHandler);
 		btnEast.setOnAction(btnEastEventHandler);
 		btnWest.setOnAction(btnWestEventHandler);
+		btnService1.setOnAction(btnService1EventController);
+		btnServiceMagnetOnOff.setOnAction(btnServiceMagnetOnOffEventController);
+		btnServiceRequestList.setOnAction(btnServiceRequestListEventController);
 
 		drone = new Drone();
 
@@ -107,6 +121,7 @@ public class GcsMainController implements Initializable {
 		initMessageView();
 		initCameraView();
 		initFlightMap();
+		initConnect();
 
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_HEARTBEAT,
@@ -326,8 +341,8 @@ public class GcsMainController implements Initializable {
 						btnMissionDownload.setDisable(false);
 						btnMissionStart.setDisable(false);
 						btnMissionStop.setDisable(false);
-						btnGetMissionFromFile.setDisable(false);
-						btnSaveMissionToFile.setDisable(false);
+						btnGetMissionFromDB.setDisable(false);
+						btnSaveMissionToDB.setDisable(false);
 						btnFenceMake.setDisable(false);
 						btnFenceClear.setDisable(false);
 						btnFenceUpload.setDisable(false);
@@ -548,6 +563,7 @@ public class GcsMainController implements Initializable {
 		@Override
 		public void handle(ActionEvent event) {
 			drone.flightController.sendMissionStart();
+			sendMissionStart();
 		}
 	};
 	//---------------------------------------------------------------------------------
@@ -559,17 +575,27 @@ public class GcsMainController implements Initializable {
 		}
 	};
 	//---------------------------------------------------------------------------------
-	public EventHandler<ActionEvent> btnGetMissionFromFileEventHandler = new EventHandler<ActionEvent>() {
+	public EventHandler<ActionEvent> btnGetMissionFromDBEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			flightMap.controller.readMissionFromFile();
+			ServiceDBRead serviceDBRead = new ServiceDBRead();
+			serviceDBRead.show();
 		}
 	};
 	//---------------------------------------------------------------------------------
-	public EventHandler<ActionEvent> btnSaveMissionToFileEventHandler = new EventHandler<ActionEvent>() {
+	public EventHandler<ActionEvent> btnSaveMissionToDBEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			flightMap.controller.writeMissionToFile();
+			JSONArray jsonArray = flightMap.controller.getMissionItems();
+			if(jsonArray.length() < 2) {
+				AlertDialog.showOkButton("알림", "미션 아이템 수가 부족합니다.");
+			} else {
+				if(rtl){
+					sendMqttRtlMission(jsonArray);
+				}else{
+					sendMqttMission(jsonArray);
+				}
+			}
 		}
 	};
 	//---------------------------------------------------------------------------------
@@ -654,4 +680,188 @@ public class GcsMainController implements Initializable {
 			drone.flightController.sendFindControl(0, -1); //m/s
 		}
 	};
+	//---------------------------------------------------------------------------------
+	public EventHandler<ActionEvent> btnService1EventController = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			System.out.println("btnService1을 처리합니다.");
+			Service1 service1 = new Service1();
+			service1.show();
+		}
+	};
+	public EventHandler<ActionEvent> btnServiceMagnetOnOffEventController = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			ServiceMagnetOnOff serviceMagnetOnOff = new ServiceMagnetOnOff();
+			serviceMagnetOnOff.show();
+		}
+	};
+	public EventHandler<ActionEvent> btnServiceRequestListEventController = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			ServiceRequestList serviceRequestList = new ServiceRequestList();
+			serviceRequestList.show();
+		}
+	};
+
+	public void initConnect() {
+		//======================================================//
+		try {
+			mqttClient = new MqttClient(NetworkConfig.instance.mqttBrokerConnStr, MqttClient.generateClientId(), null);
+			MqttConnectOptions options = new MqttConnectOptions();
+			options.setConnectionTimeout(5);
+			options.setAutomaticReconnect(true);
+			mqttClient.connect(options);
+			mqttReceiveFromWeb();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//======================================================//
+
+	}
+	public double lat;
+	public double lng;
+	public String aId;
+	public int orderId;
+	public String aName;
+	public String subTopic = "/drone/request/sub";
+	public String pubTopic = "/drone/mission/pub";
+	public ElectroMagnet electroMagnet;
+	public boolean rtl = false;
+	public boolean off = false;
+
+	public void mqttReceiveFromWeb() {
+		mqttClient.setCallback(new MqttCallback() {
+			@Override
+			public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+				String json = new String(mqttMessage.getPayload());
+				logger.info(json);
+				handleMessage(json);
+			}
+
+
+			@Override
+			public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+			}
+
+			@Override
+			public void connectionLost(Throwable throwable) {
+			}
+		});
+
+		try {
+			mqttClient.subscribe(subTopic);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void handleMessage(String json) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				JSONObject jsonObject = new JSONObject(json);
+				String mid = (String) jsonObject.get("msgid");
+				if (mid.equals("missioninfo")) {
+					rtl = false;
+					off = false;
+					aName = (String) jsonObject.get("agencyName");
+					AlertDialog.showOkButton("요청접수", "[" + aName + "] 에서 요청이 접수되었습니다.");
+					aId = (String) jsonObject.get("agencyId");
+					orderId = (Integer) jsonObject.get("orderId");
+					System.out.println(aId);
+					String waypoint = jsonObject.getString("waypoint");
+					if (waypoint.equals("")) {
+						lat = (Double) jsonObject.get("lat");
+						lng = (Double) jsonObject.get("lng");
+						GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
+					} else {
+						JSONArray jsonArray = new JSONArray(waypoint);
+						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
+					}
+				}
+				else if (mid.equals("deliveryComplete")) {
+					rtl = true;
+					off = true;
+					aName = (String) jsonObject.get("agencyName");
+					AlertDialog.showOkButton("도착알림", "[" + aName + "] 에 도착했습니다.");
+					String returnWaypoint = jsonObject.getString("rtlwaypoint");
+					if (returnWaypoint.equals("")) {
+						aId = (String) jsonObject.get("agencyId");
+						lat = (Double) jsonObject.get("lat");
+						lng = (Double) jsonObject.get("lng");
+						GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
+					} else {
+						JSONArray jsonArray = new JSONArray(returnWaypoint);
+						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
+					}
+				}
+				else if (mid.equals("showMission")) {
+					String missionWaypoint = jsonObject.getString("waypoint");
+					if (missionWaypoint.equals("")) {
+						lat = (Double) jsonObject.get("lat");
+						lng = (Double) jsonObject.get("lng");
+						GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
+					} else {
+						JSONArray jsonArray = new JSONArray(missionWaypoint);
+						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
+					}
+				}
+			}
+		});
+		if(off){
+			try {
+				electroMagnet = new ElectroMagnet();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			electroMagnet.magnetOff();
+		}
+	}
+
+	public void sendMqttMission(JSONArray jsonArray){
+		JSONObject jsonObject = new JSONObject();
+		String items = jsonArray.toString();
+		System.out.println("보내기");
+		jsonObject.put("msgId", "MISSION_UPLOAD");
+		jsonObject.put("aID", aId);
+		jsonObject.put("items", items);
+		String json = jsonObject.toString();
+		try {
+			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
+			System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendMqttRtlMission(JSONArray jsonArray){
+		JSONObject jsonObject = new JSONObject();
+		String items = jsonArray.toString();
+		System.out.println("보내기");
+		jsonObject.put("msgId", "RtlMISSION_UPLOAD");
+		jsonObject.put("aID", aId);
+		jsonObject.put("items", items);
+		String json = jsonObject.toString();
+		try {
+			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
+			System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendMissionStart(){
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("msgid", "MISSION_START");
+		jsonObject.put("aID", aId);
+		jsonObject.put("orderId", orderId);
+		String json = jsonObject.toString();
+		try {
+			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
+			System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

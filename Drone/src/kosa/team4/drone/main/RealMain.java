@@ -37,5 +37,12 @@ public class RealMain {
                 networkConfig.droneTopic +"/cam1/pub",
                 networkConfig.droneTopic +"/cam1/sub"
         );
+
+        ElectroMagnet electroMagnet = new ElectroMagnet();
+        electroMagnet.mattConnect(
+                networkConfig.mqttBrokerConnStr,
+                networkConfig.droneTopic +"/magnet/pub",
+                networkConfig.droneTopic +"/magnet/sub"
+        );
     }
 }

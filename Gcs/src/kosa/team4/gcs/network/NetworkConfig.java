@@ -11,7 +11,7 @@ import java.util.Properties;
 public class NetworkConfig {
     //------------------------------------------------------------------------------------------
     private static Logger logger = LoggerFactory.getLogger(NetworkConfig.class);
-    private static NetworkConfig instance = new NetworkConfig();
+    public static NetworkConfig instance = new NetworkConfig();
     public String mqttBrokerConnStr;
     public String droneTopic;
     public AnchorPane ui;

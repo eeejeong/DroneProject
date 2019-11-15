@@ -115,8 +115,8 @@
 					            </HBox>
 					            <HBox spacing="10.0">
 					               <children>
-					              <Button fx:id="btnGetMissionFromFile" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="파일 읽기" HBox.hgrow="ALWAYS" />
-					              <Button fx:id="btnSaveMissionToFile" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="파일 저장" HBox.hgrow="ALWAYS" />
+					              <Button fx:id="btnGetMissionFromDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 미션 읽기" HBox.hgrow="ALWAYS" />
+					              <Button fx:id="btnSaveMissionToDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 미션 저장" HBox.hgrow="ALWAYS" />
 					               </children>
 					            </HBox>
 					         </children>
@@ -195,9 +195,9 @@
             </Label>
             <HBox alignment="CENTER_RIGHT" spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="서비스1" />
-				  <Button maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="서비스2" />
-				  <Button maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="서비스3" />
+                  <Button fx:id="btnService1" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="서비스1" />
+				  <Button fx:id="btnServiceMagnetOnOff" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="전자석 ON/OFF" />
+				  <Button fx:id="btnServiceRequestList" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="요청목록" />
                </children>
                <HBox.margin>
                   <Insets bottom="5.0" right="10.0" top="5.0" />
