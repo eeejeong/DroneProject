@@ -5,11 +5,16 @@ java -Djava.library.path=/usr/lib/jni:/home/pi/opencv/opencv-3.4.5/build/lib -cp
 package kosa.team4.drone.main;
 
 import kosa.team4.drone.network.NetworkConfig;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import syk.drone.device.Camera;
+import syk.drone.device.Device;
 import syk.drone.device.FlightController;
 
 
 public class RealMain {
+    private static final Logger logger = LoggerFactory.getLogger(RealMain.class);
     public static void main(String[] args) {
         NetworkConfig networkConfig = new NetworkConfig();
 
@@ -44,5 +49,22 @@ public class RealMain {
                 networkConfig.droneTopic +"/magnet/pub",
                 networkConfig.droneTopic +"/magnet/sub"
         );
+
+        flightController.addDevice(new Device(1) {
+            @Override
+            public void off() {
+                logger.info("Medicine Dettach");
+                electroMagnet.off();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("msgid", "MISSION_ACTION");
+                String json = jsonObject.toString();
+                try {
+                    electroMagnet.mqttClient.publish("/drone/request/sub", json.getBytes(), 0, false);
+                    System.out.println(json);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

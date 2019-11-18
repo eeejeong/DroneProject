@@ -1,6 +1,7 @@
 package kosa.team4.drone.main;
 
 import kosa.team4.drone.network.NetworkConfig;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import syk.drone.device.Device;
@@ -20,15 +21,22 @@ public class SimulationMain {
                 networkConfig.droneTopic +"/fc/sub"
         );
 
+
+       // ElectroMagnet electroMagnet = new ElectroMagnet();
         flightController.addDevice(new Device(1) {
             @Override
             public void off() {
                 logger.info("Medicine Dettach");
-            }
-
-            @Override
-            public void on() {
-                logger.info("Device on");
+                //electroMagnet.off();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("msgid", "MISSION_ACTION");
+                String json = jsonObject.toString();
+                try {
+                    flightController.mqttClient.publish("/drone/request/sub", json.getBytes(), 0, false);
+                    System.out.println(json);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

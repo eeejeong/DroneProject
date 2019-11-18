@@ -11,8 +11,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ServiceMagnetOnOffController implements Initializable {
-    @FXML
-    private Button btnOK;
+
     @FXML
     private Button btnCancel;
     @FXML
@@ -24,7 +23,6 @@ public class ServiceMagnetOnOffController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnOK.setOnAction(btnOKEventHandler);
         btnCancel.setOnAction(btnCancelEventHandler);
         MagOn.setOnAction(MagOnEventHandler);
         MagOff.setOnAction(MagOffEventHandler);
@@ -34,13 +32,6 @@ public class ServiceMagnetOnOffController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    private EventHandler<ActionEvent> btnOKEventHandler = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent event) {
-
-        }
-    };
 
     private EventHandler<ActionEvent> btnCancelEventHandler = new EventHandler<ActionEvent>() {
         @Override

@@ -16,8 +16,6 @@ import java.util.ResourceBundle;
 
 public class ServiceRequestListController implements Initializable {
     @FXML
-    private Button btnOK;
-    @FXML
     private Button btnCancel;
     @FXML private WebView webView;
 
@@ -27,7 +25,6 @@ public class ServiceRequestListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnOK.setOnAction(btnOKEventHandler);
         btnCancel.setOnAction(btnCancelEventHandler);
         initWebView();
     }
@@ -45,12 +42,6 @@ public class ServiceRequestListController implements Initializable {
         //HTML이 렌더링다 다 되면 (LOAD가 완료되면) addListener 실행
         webEngine.load("http://106.253.56.124:8084/FinalWebProject/request/gcsRequest?pageNo=1");
     }
-
-    private EventHandler<ActionEvent> btnOKEventHandler = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent event) {
-        }
-    };
 
     private EventHandler<ActionEvent> btnCancelEventHandler = new EventHandler<ActionEvent>() {
         @Override

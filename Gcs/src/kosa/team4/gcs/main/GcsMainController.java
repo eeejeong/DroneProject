@@ -14,9 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import kosa.team4.gcs.service1.Service1;
 import kosa.team4.gcs.serviceDBRead.ServiceDBRead;
-import kosa.team4.gcs.serviceMagnetOnOff.ElectroMagnet;
 import kosa.team4.gcs.serviceMagnetOnOff.ServiceMagnetOnOff;
 import kosa.team4.gcs.serviceRequestList.ServiceRequestList;
 import org.eclipse.paho.client.mqttv3.*;
@@ -43,6 +41,7 @@ public class GcsMainController implements Initializable {
 	//---------------------------------------------------------------------------------
 	private static Logger logger = LoggerFactory.getLogger(GcsMainController.class);
 	//---------------------------------------------------------------------------------
+
 	@FXML public Button btnConnectConfig;
 	@FXML public Button btnConnect;
 	@FXML public Button btnArm;
@@ -74,10 +73,9 @@ public class GcsMainController implements Initializable {
 	@FXML public Button btnSouth;
 	@FXML public Button btnEast;
 	@FXML public Button btnWest;
-	@FXML public Button btnService1;
 	@FXML public Button btnServiceMagnetOnOff;
 	@FXML public Button btnServiceRequestList;
-
+	@FXML public TextField TextAName;
 	public Drone drone;
 	private MqttClient mqttClient;
 
@@ -87,36 +85,52 @@ public class GcsMainController implements Initializable {
 		btnConnectConfig.setOnAction(btnConnectConfigEventHandler);
 		btnConnect.setOnAction(btnConnectEventHandler);
 		btnArm.setOnAction(btnArmEventHandler);
-		btnTakeoff.setOnAction(btnTakeoffEventHandler); btnTakeoff.setDisable(true); 
-		btnLand.setOnAction(btnLandEventHandler); btnLand.setDisable(true);
-		btnRtl.setOnAction(btnRtlEventHandler);	btnRtl.setDisable(true);
-		btnManual.setOnAction(btnManualEventHandler); btnManual.setDisable(true);	
-		btnMissionMake.setOnAction(btnMissionMakeEventHandler); btnMissionMake.setDisable(true);
-		btnMissionClear.setOnAction(btnMissionClearEventHandler); btnMissionClear.setDisable(true);
-		btnMissionUpload.setOnAction(btnMissionUploadEventHandler); btnMissionUpload.setDisable(true);
-		btnMissionDownload.setOnAction(btnMissionDownloadEventHandler); btnMissionDownload.setDisable(true);
-		btnMissionStart.setOnAction(btnMissionStartEventHandler); btnMissionStart.setDisable(true);
-		btnMissionStop.setOnAction(btnMissionStopEventHandler); btnMissionStop.setDisable(true);
-		btnGetMissionFromDB.setOnAction(btnGetMissionFromDBEventHandler); btnGetMissionFromDB.setDisable(true);
-		btnSaveMissionToDB.setOnAction(btnSaveMissionToDBEventHandler); btnSaveMissionToDB.setDisable(true);
-		btnFenceMake.setOnAction(btnFenceMakeEventHandler); btnFenceMake.setDisable(true);
-		btnFenceClear.setOnAction(btnFenceClearEventHandler); btnFenceClear.setDisable(true);
-		btnFenceUpload.setOnAction(btnFenceUploadEventHandler); btnFenceUpload.setDisable(true);
-		btnFenceDownload.setOnAction(btnFenceDownloadEventHandler); btnFenceDownload.setDisable(true);
-		btnFenceEnable.setOnAction(btnFenceEnableEventHandler); btnFenceEnable.setDisable(true);
-		btnFenceDisable.setOnAction(btnFenceDisableEventHandler); btnFenceDisable.setDisable(true);
+		btnTakeoff.setOnAction(btnTakeoffEventHandler);
+		btnTakeoff.setDisable(true);
+		btnLand.setOnAction(btnLandEventHandler);
+		btnLand.setDisable(true);
+		btnRtl.setOnAction(btnRtlEventHandler);
+		btnRtl.setDisable(true);
+		btnManual.setOnAction(btnManualEventHandler);
+		btnManual.setDisable(true);
+		btnMissionMake.setOnAction(btnMissionMakeEventHandler);
+		btnMissionMake.setDisable(true);
+		btnMissionClear.setOnAction(btnMissionClearEventHandler);
+		btnMissionClear.setDisable(true);
+		btnMissionUpload.setOnAction(btnMissionUploadEventHandler);
+		btnMissionUpload.setDisable(true);
+		btnMissionDownload.setOnAction(btnMissionDownloadEventHandler);
+		btnMissionDownload.setDisable(true);
+		btnMissionStart.setOnAction(btnMissionStartEventHandler);
+		btnMissionStart.setDisable(true);
+		btnMissionStop.setOnAction(btnMissionStopEventHandler);
+		btnMissionStop.setDisable(true);
+		btnGetMissionFromDB.setOnAction(btnGetMissionFromDBEventHandler);
+		btnGetMissionFromDB.setDisable(true);
+		btnSaveMissionToDB.setOnAction(btnSaveMissionToDBEventHandler);
+		btnSaveMissionToDB.setDisable(true);
+		btnFenceMake.setOnAction(btnFenceMakeEventHandler);
+		btnFenceMake.setDisable(true);
+		btnFenceClear.setOnAction(btnFenceClearEventHandler);
+		btnFenceClear.setDisable(true);
+		btnFenceUpload.setOnAction(btnFenceUploadEventHandler);
+		btnFenceUpload.setDisable(true);
+		btnFenceDownload.setOnAction(btnFenceDownloadEventHandler);
+		btnFenceDownload.setDisable(true);
+		btnFenceEnable.setOnAction(btnFenceEnableEventHandler);
+		btnFenceEnable.setDisable(true);
+		btnFenceDisable.setOnAction(btnFenceDisableEventHandler);
+		btnFenceDisable.setDisable(true);
 		btnMessageView.setOnAction(btnMessageViewEventHandler);
 		btnCameraView.setOnAction(btnCameraViewEventHandler);
 		btnNorth.setOnAction(btnNorthEventHandler);
 		btnSouth.setOnAction(btnSouthEventHandler);
 		btnEast.setOnAction(btnEastEventHandler);
 		btnWest.setOnAction(btnWestEventHandler);
-		btnService1.setOnAction(btnService1EventController);
 		btnServiceMagnetOnOff.setOnAction(btnServiceMagnetOnOffEventController);
 		btnServiceRequestList.setOnAction(btnServiceRequestListEventController);
 
 		drone = new Drone();
-
 		initHud();
 		initMessageView();
 		initCameraView();
@@ -128,9 +142,9 @@ public class GcsMainController implements Initializable {
 				new MavJsonListener() {
 					@Override
 					public void receive(JSONObject jsonObject) {
-						Platform.runLater(()->{
+						Platform.runLater(() -> {
 							btnConnect.setText("연결끊기");
-							if(jsonObject.getBoolean("arm")) {
+							if (jsonObject.getBoolean("arm")) {
 								btnArm.setText("시동끄기");
 								btnTakeoff.setDisable(false);
 								btnLand.setDisable(false);
@@ -142,7 +156,7 @@ public class GcsMainController implements Initializable {
 								btnLand.setDisable(true);
 								btnRtl.setDisable(true);
 								btnManual.setDisable(true);
-								if(!drone.flightController.mode.equals(MavJsonMessage.MAVJSON_MODE_STABILIZE)) {
+								if (!drone.flightController.mode.equals(MavJsonMessage.MAVJSON_MODE_STABILIZE)) {
 									drone.flightController.sendSetMode(MavJsonMessage.MAVJSON_MODE_STABILIZE);
 								}
 							}
@@ -151,113 +165,120 @@ public class GcsMainController implements Initializable {
 				}
 		);
 	}
+
 	//---------------------------------------------------------------------------------
-	@FXML public StackPane hudPane;
+	@FXML
+	public StackPane hudPane;
 	public Hud hud;
+
 	public void initHud() {
 		hud = new Hud();
 		hudPane.getChildren().add(hud.ui);
-		
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_HEARTBEAT,
-        		new MavJsonListener() {
-		            @Override
-		            public void receive(JSONObject jsonMessage) {
-		                hud.controller.setMode(jsonMessage.getString("mode"));
-		                hud.controller.setArm(jsonMessage.getBoolean("arm"));
-		            }
-		        });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setMode(jsonMessage.getString("mode"));
+						hud.controller.setArm(jsonMessage.getBoolean("arm"));
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_GLOBAL_POSITION_INT,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	hud.controller.setAlt(jsonMessage.getDouble("alt"));
-                    }
-                });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setAlt(jsonMessage.getDouble("alt"));
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_ATTITUDE,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
 						double yaw = jsonMessage.getDouble("yaw");
-						if(yaw < 0) {
+						if (yaw < 0) {
 							yaw += 360;
 						}
-                    	hud.controller.setRollPichYaw(
+						hud.controller.setRollPichYaw(
 								jsonMessage.getDouble("roll"),
 								jsonMessage.getDouble("pitch"),
 								yaw
 						);
-                    }
-                });
-		
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_VFR_HUD,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	hud.controller.setSpeed(
-                    			jsonMessage.getDouble("airSpeed"),
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setSpeed(
+								jsonMessage.getDouble("airSpeed"),
 								jsonMessage.getDouble("groundSpeed"));
-                    }
-                });
-		
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_SYS_STATUS,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	hud.controller.setBattery(
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setBattery(
 								jsonMessage.getDouble("voltageBattery"),
 								jsonMessage.getDouble("currentBattery"),
 								jsonMessage.getInt("batteryRemaining")
 						);
-                    }
-                });
-		
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_GPS_RAW_INT,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	hud.controller.setGpsFixed(jsonMessage.getString("fix_type"));
-                    }
-                });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setGpsFixed(jsonMessage.getString("fix_type"));
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_STATUSTEXT,
-                new MavJsonListener() {
-                    private String text;
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	hud.controller.setStatusText(jsonMessage.getString("text"));
-                    }
-                });
+				new MavJsonListener() {
+					private String text;
+
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						hud.controller.setStatusText(jsonMessage.getString("text"));
+					}
+				});
 
 		hud.controller.btnCamera.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(hud.controller.isVideoOn == false) {
+				if (hud.controller.isVideoOn == false) {
 					hud.controller.videoOn();
 					drone.camera0.mqttListenerSet(new ImageListener() {
 						@Override
 						public void receive(byte[] image) {
-						    hud.controller.videoImage(image);
+							hud.controller.videoImage(image);
 						}
 					});
 				} else {
-				    hud.controller.videoOff();
-				    drone.camera0.mqttListenerSet(null);
+					hud.controller.videoOff();
+					drone.camera0.mqttListenerSet(null);
 				}
 			}
 		});
 	}
+
 	//---------------------------------------------------------------------------------
-	@FXML public StackPane messageCamPane;
+	@FXML
+	public StackPane messageCamPane;
 	public MessageView messageView;
+
 	public void initMessageView() {
 		messageView = new MessageView();
 		messageCamPane.getChildren().add(messageView.ui);
@@ -280,8 +301,10 @@ public class GcsMainController implements Initializable {
 				}
 		);
 	}
+
 	//---------------------------------------------------------------------------------
 	public CameraView cameraView;
+
 	public void initCameraView() {
 		cameraView = new CameraView();
 		messageCamPane.getChildren().add(cameraView.ui);
@@ -293,47 +316,50 @@ public class GcsMainController implements Initializable {
 			}
 		});
 	}
+
 	//---------------------------------------------------------------------------------
-	@FXML public BorderPane centerBorderPane;
+	@FXML
+	public BorderPane centerBorderPane;
 	public FlightMap flightMap;
+
 	public void initFlightMap() {
 		flightMap = new FlightMap();
 		flightMap.setApiKey("AIzaSyBR_keJURT-bAce2vHKIWKNQTC-GqJWRMI");
 		centerBorderPane.setCenter(flightMap.ui);
-		
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_HEARTBEAT,
-        		new MavJsonListener() {
+				new MavJsonListener() {
 					@Override
 					public void receive(JSONObject jsonMessage) {
 						String mode = jsonMessage.getString("mode");
 						flightMap.controller.setMode(mode);
-						
-						if(drone.flightController.homeLat == 0.0) {
-                        	drone.flightController.sendGetHomePosition();
-                        }
+
+						if (drone.flightController.homeLat == 0.0) {
+							drone.flightController.sendGetHomePosition();
+						}
 					}
 				});
-		
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_GLOBAL_POSITION_INT,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	flightMap.controller.setCurrLocation(
-                    			jsonMessage.getDouble("currLat"), 
-                    			jsonMessage.getDouble("currLng"), 
-                    			jsonMessage.getDouble("heading"));
-                    }
-                });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						flightMap.controller.setCurrLocation(
+								jsonMessage.getDouble("currLat"),
+								jsonMessage.getDouble("currLng"),
+								jsonMessage.getDouble("heading"));
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_HOME_POSITION,
-        		new MavJsonListener() {
+				new MavJsonListener() {
 					@Override
 					public void receive(JSONObject jsonMessage) {
 						flightMap.controller.setHomePosition(
-								jsonMessage.getDouble("homeLat"), 
+								jsonMessage.getDouble("homeLat"),
 								jsonMessage.getDouble("homeLng"));
 						btnMissionMake.setDisable(false);
 						btnMissionClear.setDisable(false);
@@ -348,64 +374,65 @@ public class GcsMainController implements Initializable {
 						btnFenceUpload.setDisable(false);
 						btnFenceDownload.setDisable(false);
 						btnFenceEnable.setDisable(false);
-						btnFenceDisable.setDisable(false);						
+						btnFenceDisable.setDisable(false);
 					}
 				});
-		
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_MISSION_ACK,
-        		new MavJsonListener() {
+				new MavJsonListener() {
 					@Override
 					public void receive(JSONObject jsonMessage) {
 						flightMap.controller.showInfoLabel("미션 업로드 성공");
 					}
-				});		
-		
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_MISSION_ITEMS,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	flightMap.controller.setMissionItems(jsonMessage.getJSONArray("items"));
-                    	flightMap.controller.showInfoLabel("미션 다운로드 성공");
-                    }
-                });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						flightMap.controller.setMissionItems(jsonMessage.getJSONArray("items"));
+						flightMap.controller.showInfoLabel("미션 다운로드 성공");
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_MISSION_CURRENT,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	flightMap.controller.setMissionCurrent(jsonMessage.getInt("seq"));
-                    }
-                });
-		
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						flightMap.controller.setMissionCurrent(jsonMessage.getInt("seq"));
+					}
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_FENCE_ACK,
-        		new MavJsonListener() {
+				new MavJsonListener() {
 					@Override
 					public void receive(JSONObject jsonMessage) {
 						flightMap.controller.showInfoLabel("펜스 업로드 성공");
 					}
-				});	
-		
+				});
+
 		drone.flightController.addMavJsonListener(
 				MavJsonMessage.MAVJSON_MSG_ID_FENCE_POINTS,
-                new MavJsonListener() {
-                    @Override
-                    public void receive(JSONObject jsonMessage) {
-                    	flightMap.controller.fenceMapSync(jsonMessage.getJSONArray("points"));
-                    }
-                });
+				new MavJsonListener() {
+					@Override
+					public void receive(JSONObject jsonMessage) {
+						flightMap.controller.fenceMapSync(jsonMessage.getJSONArray("points"));
+					}
+				});
 	}
+
 	//---------------------------------------------------------------------------------
 	public EventHandler<ActionEvent> btnMessageViewEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			if(messageView != null) {
+			if (messageView != null) {
 				messageView.ui.setVisible(true);
 			}
-			if(cameraView != null) {
+			if (cameraView != null) {
 				cameraView.ui.setVisible(false);
 			}
 		}
@@ -414,10 +441,10 @@ public class GcsMainController implements Initializable {
 	public EventHandler<ActionEvent> btnCameraViewEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			if(messageView != null) {
+			if (messageView != null) {
 				messageView.ui.setVisible(false);
 			}
-			if(cameraView != null) {
+			if (cameraView != null) {
 				cameraView.ui.setVisible(true);
 			}
 		}
@@ -435,7 +462,7 @@ public class GcsMainController implements Initializable {
 				dialog.setScene(scene);
 				dialog.setResizable(false);
 				dialog.show();
-			} catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -444,7 +471,7 @@ public class GcsMainController implements Initializable {
 	public EventHandler<ActionEvent> btnConnectEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			if(btnConnect.getText().equals("연결하기")) {
+			if (btnConnect.getText().equals("연결하기")) {
 				drone.connect();
 			} else {
 				drone.disconnect();
@@ -496,7 +523,7 @@ public class GcsMainController implements Initializable {
 			boolean isAlt = chkManualAlt.isSelected();
 			double manualAlt = Double.parseDouble(txtManualAlt.getText());
 
-			if(isMove==false && isAlt==true) {
+			if (isMove == false && isAlt == true) {
 				drone.flightController.sendSetPositionTargetGlobalInt(
 						drone.flightController.currLat,
 						drone.flightController.currLng,
@@ -504,8 +531,8 @@ public class GcsMainController implements Initializable {
 				);
 				return;
 			}
-			
-			if(isMove == true) {
+
+			if (isMove == true) {
 				flightMap.controller.mapListenerAdd("manualMove", new MapListener() {
 					@Override
 					public void receive(JSONObject jsonMessage) {
@@ -516,8 +543,8 @@ public class GcsMainController implements Initializable {
 						);
 					}
 				});
-				
-				if(isAlt) {
+
+				if (isAlt) {
 					flightMap.controller.manualMake(manualAlt);
 				} else {
 					flightMap.controller.manualMake(drone.flightController.alt);
@@ -544,7 +571,7 @@ public class GcsMainController implements Initializable {
 		@Override
 		public void handle(ActionEvent event) {
 			JSONArray jsonArray = flightMap.controller.getMissionItems();
-			if(jsonArray.length() < 2) {
+			if (jsonArray.length() < 2) {
 				AlertDialog.showOkButton("알림", "미션 아이템 수가 부족합니다.");
 			} else {
 				drone.flightController.sendMissionUpload(jsonArray);
@@ -587,14 +614,11 @@ public class GcsMainController implements Initializable {
 		@Override
 		public void handle(ActionEvent event) {
 			JSONArray jsonArray = flightMap.controller.getMissionItems();
-			if(jsonArray.length() < 2) {
+			if (jsonArray.length() < 2) {
 				AlertDialog.showOkButton("알림", "미션 아이템 수가 부족합니다.");
 			} else {
-				if(rtl){
-					sendMqttRtlMission(jsonArray);
-				}else{
-					sendMqttMission(jsonArray);
-				}
+				sendMqttMission(jsonArray);
+				GcsMain.instance.controller.flightMap.controller.showInfoLabel("미션 저장 완료");
 			}
 		}
 	};
@@ -620,14 +644,14 @@ public class GcsMainController implements Initializable {
 				@Override
 				public void receive(JSONObject jsonMessage) {
 					JSONArray jsonArray = jsonMessage.getJSONArray("points");
-					if(jsonArray.length() < 4) {
+					if (jsonArray.length() < 4) {
 						AlertDialog.showOkButton("알림", "펜스 포인트 수가 부족합니다.");
 					} else {
 						drone.flightController.sendFenceUpload(jsonArray);
 					}
 				}
 			});
-			
+
 			flightMap.controller.getFencePoints();
 		}
 	};
@@ -681,14 +705,6 @@ public class GcsMainController implements Initializable {
 		}
 	};
 	//---------------------------------------------------------------------------------
-	public EventHandler<ActionEvent> btnService1EventController = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			System.out.println("btnService1을 처리합니다.");
-			Service1 service1 = new Service1();
-			service1.show();
-		}
-	};
 	public EventHandler<ActionEvent> btnServiceMagnetOnOffEventController = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
@@ -719,16 +735,14 @@ public class GcsMainController implements Initializable {
 		//======================================================//
 
 	}
+
 	public double lat;
 	public double lng;
 	public String aId;
 	public int orderId;
-	public String aName;
+	public String aName = "";
 	public String subTopic = "/drone/request/sub";
 	public String pubTopic = "/drone/mission/pub";
-	public ElectroMagnet electroMagnet;
-	public boolean rtl = false;
-	public boolean off = false;
 
 	public void mqttReceiveFromWeb() {
 		mqttClient.setCallback(new MqttCallback() {
@@ -738,12 +752,9 @@ public class GcsMainController implements Initializable {
 				logger.info(json);
 				handleMessage(json);
 			}
-
-
 			@Override
 			public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
 			}
-
 			@Override
 			public void connectionLost(Throwable throwable) {
 			}
@@ -763,41 +774,29 @@ public class GcsMainController implements Initializable {
 				JSONObject jsonObject = new JSONObject(json);
 				String mid = (String) jsonObject.get("msgid");
 				if (mid.equals("missioninfo")) {
-					rtl = false;
-					off = false;
 					aName = (String) jsonObject.get("agencyName");
 					AlertDialog.showOkButton("요청접수", "[" + aName + "] 에서 요청이 접수되었습니다.");
-					aId = (String) jsonObject.get("agencyId");
-					orderId = (Integer) jsonObject.get("orderId");
-					System.out.println(aId);
-					String waypoint = jsonObject.getString("waypoint");
-					if (waypoint.equals("")) {
-						lat = (Double) jsonObject.get("lat");
-						lng = (Double) jsonObject.get("lng");
-						GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
-					} else {
-						JSONArray jsonArray = new JSONArray(waypoint);
-						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
-					}
-				}
-				else if (mid.equals("deliveryComplete")) {
-					rtl = true;
-					off = true;
-					aName = (String) jsonObject.get("agencyName");
-					AlertDialog.showOkButton("도착알림", "[" + aName + "] 에 도착했습니다.");
-					String returnWaypoint = jsonObject.getString("rtlwaypoint");
-					if (returnWaypoint.equals("")) {
+					if(AlertDialog.optional.get().getText().equals("승인")) {
 						aId = (String) jsonObject.get("agencyId");
-						lat = (Double) jsonObject.get("lat");
-						lng = (Double) jsonObject.get("lng");
-						GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
-					} else {
-						JSONArray jsonArray = new JSONArray(returnWaypoint);
-						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
+						orderId = (Integer) jsonObject.get("orderId");
+						TextAName.setText(aName+"("+orderId+")");
+						TextAName.autosize();
+						System.out.println(aId);
+						String waypoint = jsonObject.getString("waypoint");
+						if (waypoint.equals("")) {
+							lat = (Double) jsonObject.get("lat");
+							lng = (Double) jsonObject.get("lng");
+							GcsMain.instance.controller.flightMap.controller.setMissionItems(lat, lng);
+						} else {
+							JSONArray jsonArray = new JSONArray(waypoint);
+							GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
+						}
 					}
-				}
-				else if (mid.equals("showMission")) {
+				} else if (mid.equals("showMission")) {
 					String missionWaypoint = jsonObject.getString("waypoint");
+					aName = (String) jsonObject.get("agencyName");
+					TextAName.setText(aName);
+					aId = (String) jsonObject.get("agencyId");
 					if (missionWaypoint.equals("")) {
 						lat = (Double) jsonObject.get("lat");
 						lng = (Double) jsonObject.get("lng");
@@ -807,23 +806,18 @@ public class GcsMainController implements Initializable {
 						GcsMain.instance.controller.flightMap.controller.setMissionItems2(jsonArray);
 					}
 				}
+				else if (mid.equals("MISSION_ACTION")) {
+					missionAction();
+				}
 			}
 		});
-		if(off){
-			try {
-				electroMagnet = new ElectroMagnet();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			electroMagnet.magnetOff();
-		}
 	}
 
-	public void sendMqttMission(JSONArray jsonArray){
+	public void sendMqttMission(JSONArray jsonArray) {
 		JSONObject jsonObject = new JSONObject();
 		String items = jsonArray.toString();
 		System.out.println("보내기");
-		jsonObject.put("msgId", "MISSION_UPLOAD");
+		jsonObject.put("msgid", "MISSION_UPLOAD");
 		jsonObject.put("aID", aId);
 		jsonObject.put("items", items);
 		String json = jsonObject.toString();
@@ -835,23 +829,7 @@ public class GcsMainController implements Initializable {
 		}
 	}
 
-	public void sendMqttRtlMission(JSONArray jsonArray){
-		JSONObject jsonObject = new JSONObject();
-		String items = jsonArray.toString();
-		System.out.println("보내기");
-		jsonObject.put("msgId", "RtlMISSION_UPLOAD");
-		jsonObject.put("aID", aId);
-		jsonObject.put("items", items);
-		String json = jsonObject.toString();
-		try {
-			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
-			System.out.println(json);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void sendMissionStart(){
+	public void sendMissionStart() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("msgid", "MISSION_START");
 		jsonObject.put("aID", aId);
@@ -864,4 +842,21 @@ public class GcsMainController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+
+	public void missionAction() {
+		System.out.println("집가자!!");
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("msgid", "MISSION_ACTION");
+		jsonObject.put("orderId", orderId);
+		String json = jsonObject.toString();
+		try {
+			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
+			System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
+
+
+

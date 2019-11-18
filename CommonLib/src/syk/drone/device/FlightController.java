@@ -675,7 +675,7 @@ public class FlightController {
     //#################################################################################
     // GCS MQTT 통신
     //#################################################################################
-    private MqttClient mqttClient;
+    public MqttClient mqttClient;
     private String pubTopic;
     private String subTopic;
     public void mqttConnect(String mqttBrokerConnStr, String pubTopic, String subTopic) {

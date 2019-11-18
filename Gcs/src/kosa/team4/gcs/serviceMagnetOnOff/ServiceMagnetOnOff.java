@@ -21,7 +21,7 @@ public class ServiceMagnetOnOff {
             stage.initOwner(GcsMain.instance.primaryStage);
             BorderPane pane = (BorderPane) FXMLLoader.load(getClass().getResource("ServiceMagnetOnOff.fxml"));
             Scene scene = new Scene(pane);
-            scene.getStylesheets().add(GcsMain.class.getResource("style_dark.css").toExternalForm());
+            scene.getStylesheets().add(GcsMain.class.getResource("style_mint.css").toExternalForm());
             stage.setScene(scene);
             stage.setResizable(false);
 
