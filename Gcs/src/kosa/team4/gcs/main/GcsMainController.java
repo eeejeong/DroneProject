@@ -847,6 +847,7 @@ public class GcsMainController implements Initializable {
 		System.out.println("집가자!!");
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("msgid", "MISSION_ACTION");
+		jsonObject.put("aID", aId);
 		jsonObject.put("orderId", orderId);
 		String json = jsonObject.toString();
 		try {
