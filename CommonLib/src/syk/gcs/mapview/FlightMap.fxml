@@ -13,7 +13,7 @@
 
 <SplitPane dividerPositions="0.5344986200551978" orientation="VERTICAL" prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="syk.gcs.mapview.FlightMapController">
    <items>
-      <HBox>
+      <HBox prefHeight="410.0" prefWidth="998.0">
          <children>
             <StackPane HBox.hgrow="ALWAYS">
                <children>

@@ -190,22 +190,17 @@
       </StackPane>
    </center>
    <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="45.0" spacing="3.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER" style="-fx-background-color: #b0d7dc">
          <children>
             <ImageView fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@gcs_title_white.png" />
-               </image>
-               <HBox.margin>
-                  <Insets left="5.0" />
-               </HBox.margin>
-            </ImageView>
-            <!--<Label alignment="BOTTOM_LEFT" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Ground Control Station">
-               <font>
-                  <Font name="Times New Roman Bold Italic" size="34.0" />
-               </font>
-            </Label>-->
-            <HBox alignment="CENTER_RIGHT" prefHeight="45.0" HBox.hgrow="ALWAYS">
+				 <image>
+					 <Image url="@gcs_title_white.png" />
+				 </image>
+				 <HBox.margin>
+					 <Insets left="5.0" />
+				 </HBox.margin>
+			</ImageView>
+            <HBox alignment="CENTER_RIGHT" spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
                   <Button fx:id="btnServiceMagnetOnOff" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="물품 부착">
                      <HBox.margin>

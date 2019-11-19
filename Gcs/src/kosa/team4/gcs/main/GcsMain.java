@@ -28,7 +28,7 @@ public class GcsMain extends Application {
 		controller = loader.getController();
 
 		Scene scene = new Scene(ui);
-		scene.getStylesheets().add(GcsMain.class.getResource("style_dark.css").toExternalForm());
+		scene.getStylesheets().add(GcsMain.class.getResource("style_mint.css").toExternalForm());
 
 		primaryStage.setTitle("Drone Ground Control Station");
 		primaryStage.setScene(scene);

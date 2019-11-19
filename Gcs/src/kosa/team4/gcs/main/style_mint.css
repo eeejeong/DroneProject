@@ -1,14 +1,14 @@
 .pane {
-    -fx-background-color: #292929;
+    -fx-background-color: #f7f7f7;
 }
 
 .pane2 {
-    -fx-background-color: #353535;
-    -fx-background-radius: 10;
+    -fx-background-color: #f7f7f7;
+    /*-fx-background-radius: 10;*/
 }
 
 .label {
-	-fx-text-fill:white;
+	-fx-text-fill:black;
 }
 
 #lblStatusText {
@@ -26,11 +26,11 @@
 }
 
 #zoomSlider {
-    -fx-background-color: #292929;
+    -fx-background-color: #f7f7f7;
 }
 
 #zoomSlider .axis {
-	-fx-tick-label-fill: #00ff00;
+	-fx-tick-label-fill: #030303;
 }
 
 #zoomSlider .thumb {
@@ -60,12 +60,12 @@
     -fx-background-radius: 9;
 }
 .button:hover{
-    -fx-background-color: #9ed9dc;
-    -fx-text-fill:white;
+    -fx-background-color: /*#9ed9dc*/#f2f2f2;
+    /*-fx-text-fill:white;*/
 }
 
 .table-view .column-header {
-    -fx-background-color: #05587b;
+    -fx-background-color: /*#05587b*/#999999;
     -fx-border-color: white;
 }
 
@@ -74,20 +74,20 @@
 }
 
 .table-view .table-cell{
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-alignment: center;
 }
 
 .table-row-cell{
-    -fx-background-color: -fx-table-cell-border-color, #292929;
+    -fx-background-color: -fx-table-cell-border-color, #d9dbdb;
 }
 
 .table-row-cell:odd{
-    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-color: -fx-table-cell-border-color, #bfbfbf;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: darkred;
+    -fx-background-color: #a3d0d6;
 }
 
 .tab-pane {
@@ -126,11 +126,11 @@
 }
 
 .tab-content-pane {
-	-fx-background-color: #353535
+	-fx-background-color: #f7f7f7;
 }
 
 .menu-item .label {
-    -fx-text-fill: white;
+    -fx-text-fill: /*white*/black;
 }
 
 .menu-item:focused {
@@ -156,11 +156,11 @@
 }
 
 .check-box {
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }
 
 .list-view {
-    -fx-background-color: #353535;
+    -fx-background-color: #f7f7f7;
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
@@ -169,17 +169,17 @@
 }
 
 .list-cell:even {
-    -fx-background-color: #292929;
-    -fx-text-fill: white;
+    -fx-background-color: #d9dbdb;
+    -fx-text-fill: #292929;
 }
 
 .list-cell:odd {
-    -fx-background-color: #424242;
-    -fx-text-fill: #77ff77;
+    -fx-background-color: #bfbfbf;
+    -fx-text-fill: #292929;
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: orange;
+    -fx-background-color: #a3d0d6;
     -fx-text-fill: white;
 }
 
