@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -22,6 +23,16 @@
                         <Font name="Arial Rounded MT Bold" size="30.0" />
                      </font>
                   </Label>
+                  <ImageView fitHeight="100.0" fitWidth="100.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_LEFT">
+                     <image>
+                        <Image url="@medirone_logo_white.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D minY="500.0" />
+                     </viewport>
+                     <StackPane.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </StackPane.margin></ImageView>
                </children>
             </StackPane>
             <Slider fx:id="zoomSlider" majorTickUnit="2.0" max="20.0" min="3.0" minorTickCount="1" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0" />
