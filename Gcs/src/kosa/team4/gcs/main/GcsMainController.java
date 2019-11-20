@@ -565,7 +565,7 @@ public class GcsMainController implements Initializable {
 		public void handle(ActionEvent event) {
 			flightMap.controller.missionClear();
 			orderId=0;
-			TextAName.setText(aName);
+			TextAName.setText("");
 		}
 	};
 	//---------------------------------------------------------------------------------
@@ -610,9 +610,6 @@ public class GcsMainController implements Initializable {
 			if(orderId == 0){
 				ServiceDBRead serviceDBRead = new ServiceDBRead();
 				serviceDBRead.show();
-			}
-			else {
-				missionRead();
 			}
 		}
 	};
@@ -868,7 +865,7 @@ public class GcsMainController implements Initializable {
 		TextAName.setText(aName);
 	}
 
-	public void missionRead() {
+	/*public void missionRead() {
 		System.out.println("미션읽기");
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("msgid", "MISSION_READ");
@@ -881,7 +878,7 @@ public class GcsMainController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }
 
 

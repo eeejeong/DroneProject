@@ -101,8 +101,8 @@
 					         <children>
 					            <HBox spacing="10.0">
 					               <children>
-					                  <Button fx:id="btnMissionMake" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="미션 생성" HBox.hgrow="ALWAYS" />
-					                  <Button fx:id="btnMissionClear" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="미션 제거" HBox.hgrow="ALWAYS" />
+					                  <Button fx:id="btnMissionMake" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0"  text="경로 생성" HBox.hgrow="ALWAYS" />
+					                  <Button fx:id="btnMissionClear" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="76.0" text="배송 요청 취소" HBox.hgrow="ALWAYS" />
 					               </children>
 					            </HBox>
 					            <HBox spacing="10.0">
@@ -113,14 +113,14 @@
 					            </HBox>
 					            <HBox spacing="10.0">
 					               <children>
-					                  <Button fx:id="btnMissionStart" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="미션 시작" HBox.hgrow="ALWAYS" />
-					              <Button fx:id="btnMissionStop" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="미션 중지" HBox.hgrow="ALWAYS" />
+					                  <Button fx:id="btnMissionStart" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="배송 시작" HBox.hgrow="ALWAYS" />
+					              <Button fx:id="btnMissionStop" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="배송 중지" HBox.hgrow="ALWAYS" />
 					               </children>
 					            </HBox>
 					            <HBox spacing="10.0">
 					               <children>
-					              <Button fx:id="btnGetMissionFromDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 미션 읽기" HBox.hgrow="ALWAYS" />
-					              <Button fx:id="btnSaveMissionToDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 미션 저장" HBox.hgrow="ALWAYS" />
+					              <Button fx:id="btnGetMissionFromDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 경로 읽기" HBox.hgrow="ALWAYS" />
+					              <Button fx:id="btnSaveMissionToDB" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" text="DB 경로 저장" HBox.hgrow="ALWAYS" />
 					               </children>
 					            </HBox>
 					         </children>
