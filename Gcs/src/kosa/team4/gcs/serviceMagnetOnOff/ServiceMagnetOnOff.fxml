@@ -27,7 +27,7 @@
       </HBox>
    </center>
    <bottom>
-      <Pane prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
+      <Pane prefHeight="30.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
              <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" layoutX="316.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Cancel">
                <font>

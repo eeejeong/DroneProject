@@ -55,7 +55,7 @@
 .button:pressed {
     -fx-text-fill:white;
     -fx-font-weight: bold;
-    -fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%);
+    -fx-background-color:linear-gradient(#e5e5e5 0%, #c1c1c1 25%);
     -fx-background-insets: 0;
     -fx-background-radius: 9;
 }

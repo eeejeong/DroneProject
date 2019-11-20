@@ -190,16 +190,20 @@
       </StackPane>
    </center>
    <top>
-      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER" style="-fx-background-color: #b0d7dc">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #b0d7dc" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-				 <image>
-					 <Image url="@gcs_title_white.png" />
-				 </image>
-				 <HBox.margin>
-					 <Insets left="5.0" />
-				 </HBox.margin>
-			</ImageView>
+            <HBox prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="40.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
+      				 <image>
+      					 <Image url="@gcs_title_white.png" />
+      				 </image>
+      				 <HBox.margin>
+      					 <Insets left="5.0" top="5.0" />
+      				 </HBox.margin>
+      			</ImageView>
+               </children>
+            </HBox>
             <HBox alignment="CENTER_RIGHT" spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
                   <Button fx:id="btnServiceMagnetOnOff" maxHeight="40.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" text="물품 부착">

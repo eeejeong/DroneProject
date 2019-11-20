@@ -564,6 +564,8 @@ public class GcsMainController implements Initializable {
 		@Override
 		public void handle(ActionEvent event) {
 			flightMap.controller.missionClear();
+			orderId=0;
+			TextAName.setText(aName);
 		}
 	};
 	//---------------------------------------------------------------------------------
@@ -605,8 +607,13 @@ public class GcsMainController implements Initializable {
 	public EventHandler<ActionEvent> btnGetMissionFromDBEventHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			ServiceDBRead serviceDBRead = new ServiceDBRead();
-			serviceDBRead.show();
+			if(orderId == 0){
+				ServiceDBRead serviceDBRead = new ServiceDBRead();
+				serviceDBRead.show();
+			}
+			else {
+				missionRead();
+			}
 		}
 	};
 	//---------------------------------------------------------------------------------
@@ -739,7 +746,7 @@ public class GcsMainController implements Initializable {
 	public double lat;
 	public double lng;
 	public String aId;
-	public int orderId;
+	public int orderId=0;
 	public String aName = "";
 	public String subTopic = "/drone/request/sub";
 	public String pubTopic = "/drone/mission/pub";
@@ -793,6 +800,7 @@ public class GcsMainController implements Initializable {
 						}
 					}
 				} else if (mid.equals("showMission")) {
+					System.out.println("11111");
 					String missionWaypoint = jsonObject.getString("waypoint");
 					aName = (String) jsonObject.get("agencyName");
 					TextAName.setText(aName);
@@ -847,6 +855,23 @@ public class GcsMainController implements Initializable {
 		System.out.println("집가자!!");
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("msgid", "MISSION_ACTION");
+		jsonObject.put("aID", aId);
+		jsonObject.put("orderId", orderId);
+		String json = jsonObject.toString();
+		try {
+			mqttClient.publish(pubTopic, json.getBytes(), 0, false);
+			System.out.println(json);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		orderId =0;
+		TextAName.setText(aName);
+	}
+
+	public void missionRead() {
+		System.out.println("미션읽기");
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("msgid", "MISSION_READ");
 		jsonObject.put("aID", aId);
 		jsonObject.put("orderId", orderId);
 		String json = jsonObject.toString();
